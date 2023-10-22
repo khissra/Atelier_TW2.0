@@ -1,0 +1,20 @@
+<h1>Détails book</h1>
+        <div>
+            <div>
+                <div>
+                    <div>Titre:</div>
+                    <div>{{ book.title }}</div>
+
+                    <div>Auteur:</div>
+                    <div>{{ book.author.username }}</div>
+
+                    <div>Date de publication:</div>
+                    <div>{{ book.publicationDate|date('d/m/Y') }}</div>
+
+                    <div>category:</div>
+                    <div>{{ book.category }}</div>
+                </div>
+            </div>
+        </div>
+        <a href="{{ path('list_books') }}">Retour à la liste</a>
+    </div>

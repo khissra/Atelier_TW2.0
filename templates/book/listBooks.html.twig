@@ -1,0 +1,46 @@
+<h1 align="center">list Book</h1>
+<a href="{{ path('add_book')}}">Add Book</a>
+<table border="1" align="center">
+    <tr>
+        <td>Ref</td>
+        <td>Title</td>
+        <td>Published</td>
+        <td>Author</td>
+        <td>PublicationDate</td>
+        <td>Category</td>
+        <td>Action</td>
+    </tr>
+    {% set published= 0 %}
+    {% set notPublished= 0 %}
+    {% for book in books %}
+{#        {% if book.published == 1  %}#}
+        {% if book.published == 1 %}
+        {% set published= published+1 %}
+        {% else %}
+        {% set notPublished= notPublished+1 %}
+        {% endif %}
+            <tr>
+        <td>{{ book.ref }}</td>
+        <td>{{ book.title|upper }}</td>
+        <td>{% if book.published ==1 %}
+            published</td>
+            {% else %}
+            notPublished
+            {% endif %}
+        <td>{{ book.author }}</td>
+       {# <td>{{ book.author.username }}</td>#}
+        <td>{{ book.publicationDate|date }}</td>
+        <td>{{ book.category }}</td>
+        <td><a href="{{path('show_book',{ref:book.ref})}}">Show</a>
+            <a href="{{path('update_book',{ref:book.ref})}}">Update</a>
+            <a href="{{path('delete_book',{ref:book.ref})}}">Delete</a>
+        </td>
+    </tr>
+        {% else %}
+        <h2> tAB VIDE</h2>
+            {#{% endif %}#}
+    {% endfor %}
+</table>
+<h3>Nb_Books= {{ books|length }}</h3>
+<h3>Books Published: {{ published}} </h3>
+<h3>Books notPublished: {{ notPublished }}</h3>

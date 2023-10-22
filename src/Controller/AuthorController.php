@@ -5,10 +5,15 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Author;
+use App\Repository\AuthorRepository;
 
 class AuthorController extends AbstractController
 {
-    #[Route('/author', name: 'app_author')]
+  /**
+   * Route('/author', name: 'app_author')
+    */
     public function index(): Response
     {
         return $this->render('author/index.html.twig', [
@@ -16,7 +21,9 @@ class AuthorController extends AbstractController
         ]);
     }
 
-    #[Route('/list/{var}', name: 'list_author')]
+    /**
+   *Route('/list/{var}', name: 'list_author')
+   */
     public function listAuthor($var)
     {
         $authors = array(
@@ -32,7 +39,9 @@ class AuthorController extends AbstractController
                 ));
     }
 
-    #[Route('/author/{id}', name: 'author_details')]
+    /**
+   *Route('/author/{id}', name: 'author_details')
+   */
 public function authorDetails($id)
 {
     $authors = array(
@@ -54,5 +63,62 @@ public function authorDetails($id)
         'author' => $author,
     ]);
 }
+
+/**
+   *Route('/listAuthor', name: 'authors')
+   */
+public function list(AuthorRepository $repository)
+{
+    $authors = $repository->findAll();
+    return $this->render("author/listAuthors.html.twig",
+        array(
+            'tabAuthors'=>$authors
+        ));
+}
+
+/**
+   *Route('/add', name: 'add_authors')
+   */
+public function addAuthor(ManagerRegistry $managerRegistry)
+{
+    $author= new Author();
+    $author->setEmail("author6@gmail.com");
+    $author->setUsername("author6");
+   // $em= $this->getDoctrine()->getManager();
+    $em= $managerRegistry->getManager();
+    $em->persist($author);
+    $em->flush();
+    return $this->redirectToRoute("authors");
+
+}
+
+
+/**
+   *Route('/update/{id}', name: 'update_authors')
+   */
+public function updateAuthor($id,AuthorRepository $repository,ManagerRegistry $managerRegistry)
+{
+    $author= $repository->find($id);
+    $author->setEmail("author7@gmail.com");
+    $author->setUsername("author7");
+    // $em= $this->getDoctrine()->getManager();
+    $em= $managerRegistry->getManager();
+    $em->flush();
+    return $this->redirectToRoute("authors");
+}
+
+/**
+   *Route('/remove/{id}', name: 'remove_authors')
+   */
+public function deleteAuthor(AuthorRepository $repository,$id,
+                             ManagerRegistry $managerRegistry)
+{
+    $author= $repository->find($id);
+    $em = $managerRegistry->getManager();
+    $em->remove($author);
+    $em->flush();
+    return $this->redirectToRoute("authors");
+}
+
 
 }
