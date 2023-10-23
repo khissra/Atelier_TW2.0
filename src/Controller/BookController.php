@@ -28,7 +28,10 @@ class BookController extends AbstractController
  */
 public function list(BookRepository $repository)
 {
-    $books = $repository->findAll();
+   //$books = $repository->findAll();
+    //$books = $repository->findAllBooksByAuthor(1);
+    //$books2 = $repository->findAllBooksByAuthor2();
+     $books = $repository->findAllBooksByDate();
     return $this->render("book/listBooks.html.twig", [
         'books' => $books
     ]);

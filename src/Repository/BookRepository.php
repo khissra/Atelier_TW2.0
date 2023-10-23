@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Book;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Validator\Constraints\Date;
+use DateTime;
 
 /**
  * @extends ServiceEntityRepository<Book>
@@ -38,6 +40,54 @@ class BookRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+     /**
+     * @return Book[]
+     */
+    public function findById(): array
+        {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQueryBuilder('b')
+         ->orderBy('b.ref', 'DESC')
+         ->setMaxResults(500);
+
+        return $query->getQuery()->getResult();
+    }
+
+
+     /**
+     * @return Book[]
+     */
+    public function findAllBooksByAuthor($username) {
+        $qb = $this->createQueryBuilder('b')
+            ->join('b.author', 'a') 
+            ->where('a.username = :username') 
+            ->setParameter('username', $username);
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return Book[]
+     */
+    public function findAllBooksByDate() {
+        $date = new DateTime('2023-01-01');
+        $qb = $this->createQueryBuilder('b')
+        ->where('b.publicationDate >= :date')
+        ->setParameter('date', $date);
+    return $qb->getQuery()->getResult();
+    }
+
+
+     /**
+     * @return Book[]
+     */
+    public function findAllBooksByAuthor2() {
+        $qb = $this->createQueryBuilder('b')
+            ->join('b.author', 'a') 
+            ->groupBy('a.id');
+        return $qb->getQuery()->getResult();
+    }
+    
 
 //    /**
 //     * @return Book[] Returns an array of Book objects
