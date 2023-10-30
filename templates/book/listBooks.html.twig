@@ -1,46 +1,47 @@
-<h1 align="center">list Book</h1>
-<a href="{{ path('add_book')}}">Add Book</a>
-<table border="1" align="center">
-    <tr>
-        <td>Ref</td>
-        <td>Title</td>
-        <td>Published</td>
-        <td>Author</td>
-        <td>PublicationDate</td>
-        <td>Category</td>
-        <td>Action</td>
-    </tr>
-    {% set published= 0 %}
-    {% set notPublished= 0 %}
-    {% for book in books %}
-{#        {% if book.published == 1  %}#}
-        {% if book.published == 1 %}
-        {% set published= published+1 %}
-        {% else %}
-        {% set notPublished= notPublished+1 %}
-        {% endif %}
-            <tr>
-        <td>{{ book.ref }}</td>
-        <td>{{ book.title|upper }}</td>
-        <td>{% if book.published ==1 %}
-            published</td>
+<h1 align="center">List books</h1>
+{{ form(searchForm) }}
+{% if  books is empty %}
+    <h1>No Books found</h1>
+{% else %}
+{#    {% set published_Book=0 %}#}
+{#    {% set unpublished_Book=0 %}#}
+    <table align="center" border="1">
+        <tr>
+            <td>Ref</td>
+            <td>Title</td>
+            <th>Publication date</th>
+            <th>Published</th>
+            <th>Category</th>
+            <th>Author</th>
+{#
+            <th>Actions</th>
+#}
+        </tr>
+        {% for book in books %}
+
+         {#   {% if book.published == true %}
+                {% set published_Book=published_Book+1 %}
             {% else %}
-            notPublished
-            {% endif %}
-        <td>{{ book.author }}</td>
-       {# <td>{{ book.author.username }}</td>#}
-        <td>{{ book.publicationDate|date }}</td>
-        <td>{{ book.category }}</td>
-        <td><a href="{{path('show_book',{ref:book.ref})}}">Show</a>
-            <a href="{{path('update_book',{ref:book.ref})}}">Update</a>
-            <a href="{{path('delete_book',{ref:book.ref})}}">Delete</a>
-        </td>
-    </tr>
-        {% else %}
-        <h2> tAB VIDE</h2>
-            {#{% endif %}#}
-    {% endfor %}
-</table>
-<h3>Nb_Books= {{ books|length }}</h3>
-<h3>Books Published: {{ published}} </h3>
-<h3>Books notPublished: {{ notPublished }}</h3>
+                {% set unpublished_Book=unpublished_Book+1 %}
+            {% endif %}#}
+            <tr>
+                <td>{{ book.ref }}</td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.publicationDate | date }}</td>
+                <td>{{ book.published }}</td>
+                <td>{{ book.category }}</td>
+                <td>{{ book.author.username }}</td>
+               {# <td>
+                    <a href="{{ path('update_book', { ref: book.ref }) }}">edit</a>
+                    <a href="#">delete</a>
+                    <a href="{{ path('show_book', { ref: book.ref }) }}">show</a>
+                </td>#}
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+{#
+<a align="center" href=" {{path('add_book')}}">Add Book</a>
+<h5>published_Book = {{ published_Book }}</h5>
+<h5>unpublished_Book = {{ unpublished_Book }}</h5>
+#}

@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Author;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\EntityManagerInterface;
 /**
  * @extends ServiceEntityRepository<Author>
  *
@@ -38,6 +38,33 @@ class AuthorRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function listAuthorByEmail(): array
+     {
+        $qb = $this->createQueryBuilder('a');
+        $qb->orderBy('a.email', 'ASC'); 
+        return $qb->getQuery()->getResult();
+    }
+
+public function findAuthorsByBookCountRange($minBookCount, $maxBookCount)
+{
+    $qb = $this->createQueryBuilder('a')
+        ->where('a.nbBooks >= :minBookCount')
+        ->andWhere('a.nbBooks <= :maxBookCount')
+        ->setParameter('minBookCount', $minBookCount)
+        ->setParameter('maxBookCount', $maxBookCount);
+
+    return $qb->getQuery()->getResult();
+}
+public function deleteAuthorsWithZeroBooks(EntityManagerInterface $entityManager)
+{
+    $qb = $entityManager->createQueryBuilder();
+    
+    $qb->delete('App\Entity\Author', 'a')
+       ->where('a.nbBooks = 0');
+    
+    $query = $qb->getQuery();
+    $query->execute();
+}
 
 //    /**
 //     * @return Author[] Returns an array of Author objects

@@ -4,6 +4,11 @@
 {% if  tabAuthors is empty%}
 <h5>Tab vide</h5>
 {% else %}
+<form method="GET" action="{{ path('searchAuthorsByBookCount') }}">
+    <input type="number" name="minBookCount" placeholder="Min">
+    <input type="number" name="maxBookCount" placeholder="Max">
+    <button type="submit">Rechercher</button>
+</form>
 <table border="1">
     <tr>
         <td>id</td>

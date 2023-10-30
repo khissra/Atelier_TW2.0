@@ -8,6 +8,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Author;
 use App\Repository\AuthorRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
 class AuthorController extends AbstractController
 {
@@ -120,5 +122,28 @@ public function deleteAuthor(AuthorRepository $repository,$id,
     return $this->redirectToRoute("authors");
 }
 
+/**
+   *Route('/searchAuthorsByBookCount', name: 'searchAuthorsByBookCount')
+   */
+public function searchAuthorsByBookCount(Request $request, AuthorRepository $authorRepository)
+    {
+        $minBookCount = $request->query->get('minBookCount');
+        $maxBookCount = $request->query->get('maxBookCount');
 
+        $authors = $authorRepository->findAuthorsByBookCountRange($minBookCount, $maxBookCount);
+
+        return $this->render('author/list.html.twig', [
+            'authors' => $authors,
+        ]);
+    }
+
+    /**
+   *Route('/deleteAuthorsWithZeroBooks', name: 'deleteAuthorsWithZeroBooks')
+   */
+    public function deleteAuthorsWithZeroBooks(AuthorRepository $authorRepository, EntityManagerInterface $entityManager)
+    {
+        $authorRepository->deleteAuthorsWithZeroBooks($entityManager);
+
+        return $this->redirectToRoute('author/list.html.twig'); 
+    }
 }
